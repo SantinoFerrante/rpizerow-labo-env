@@ -1,48 +1,48 @@
-# Nombre del archivo
-FILE := main
-# Nombre del modulo (reemplazar nombre y apellido)
-MODN := apellido_nombre_ej02
-# Directorio para archivos de compilacion
-MDIR := $(PWD)/build
-# Directorio donde estan los modulos del kernel
-KDIR := /lib/modules/$(shell uname -r)/build
+# Nombre del archivo fuente principal
+SRC_FILE := main
+# Nombre del módulo (reemplazar con tu nombre y apellido)
+MODULE_NAME := Ferrante_Santino_ej02
+# Directorio para archivos de compilación
+BUILD_DIR := $(PWD)/build
+# Directorio que contiene los archivos de construcción del kernel
+KERNEL_BUILD_DIR := /lib/modules/$(shell uname -r)/build
 
-# Archivo objeto para agregar
-obj-m += ${MODN}.o
-${MODN}-objs := ${FILE}.o
+# Archivo objeto para agregar al módulo
+obj-m += ${MODULE_NAME}.o
+${MODULE_NAME}-objs := ${SRC_FILE}.o
 
-# Regla de compilacion por defecto
+# Regla predeterminada para compilar el módulo
 all:
-	@mkdir -p build;	\
-	cp -f ${FILE}.c Makefile ${MDIR};	\
-	cd build;	\
-	make -C ${KDIR} M=${MDIR} modules	\
+	@mkdir -p build; \
+	cp -f ${SRC_FILE}.c Makefile ${BUILD_DIR}; \
+	cd build; \
+	make -C ${KERNEL_BUILD_DIR} M=${BUILD_DIR} modules \
 
-# Regla para limpiar los archivos compilados
+# Regla para limpiar los archivos generados en la compilación
 clean:
-	@cd build;	\
-	make -C ${KDIR} M=${MDIR} clean;	\
+	@cd build; \
+	make -C ${KERNEL_BUILD_DIR} M=${BUILD_DIR} clean; \
 	cd .. && rm -rf build
 
-# Carga el modulo en el kernel
-insmod:
-	@sudo insmod build/${MODN}.ko
+# Cargar el módulo en el kernel
+load_module:
+	@sudo insmod build/${MODULE_NAME}.ko
 
-# Quita el modulo del kernel
-rmmod:
-	@sudo rmmod ${MODN}
+# Retirar el módulo del kernel
+unload_module:
+	@sudo rmmod ${MODULE_NAME}
 
-# Miro mensajes del kernel
-dmesg:
-	@dmesg -wHT | grep ${MODN}
+# Mostrar mensajes del kernel relacionados con el módulo
+view_logs:
+	@dmesg -wHT | grep ${MODULE_NAME}
 
-# Ayuda con comandos
+# Ayuda con los comandos disponibles
 help:
-	@echo "RPiZeroW Labo Env - Makefile v1.0"
+	@echo "Entorno Makefile para RPiZeroW - v1.0"
 	@echo ""
-	@echo "-all: compila el programa (opcion por defecto)"
-	@echo "-clean: limpia los archivos compilados"
-	@echo "-insmod: carga el modulo en el kernel"
-	@echo "-rmmod: retira el modulo del kernel"
-	@echo "-dmesg: muestra los mensajes del kernel generados por este modulo"
-	@echo "-help: muestra estos mensajes de ayuda"
+	@echo "- all: Compila el módulo (comando predeterminado)"
+	@echo "- clean: Limpia los archivos generados en la compilación"
+	@echo "- load_module: Carga el módulo en el kernel"
+	@echo "- unload_module: Retira el módulo del kernel"
+	@echo "- view_logs: Muestra los mensajes del kernel relacionados con este módulo"
+	@echo "- help: Muestra esta lista de comandos disponibles"
